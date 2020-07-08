@@ -14,9 +14,6 @@ courseRouter.route('/')
     let category = req.query.category;
     let subcategory = req.query.subcategory;
 
-    console.log(category)
-    console.log(subcategory)
-
     if(category && subcategory) {
         Courses.find({category: category, subcategory: subcategory})
         .populate('institution')
@@ -94,9 +91,18 @@ courseRouter.route('/:courseId')
     Courses.findById(req.params.courseId)
     .populate('institution')
     .then((course) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(course);
+        if(!course) {
+            const err = new Error('Course with id ' + req.params.courseId + ' not found.');
+            err.statusCode = 404;
+            return next(err);
+        }
+
+        else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(course);
+        }
+        
 
     }, err => next(err))
     .catch((err) => next(err));
@@ -113,9 +119,17 @@ courseRouter.route('/:courseId')
     }, {new: true})
     .populate('institution')
     .then((course) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(course);
+        if(!course) {
+            const err = new Error('Course with id ' + req.params.courseId + ' not found.');
+            err.statusCode = 404;
+            return next(err);
+        }
+        else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(course);
+        }
+        
     }, err => next(err))
     .catch((err) => next(err));
 })

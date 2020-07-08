@@ -63,9 +63,17 @@ institutionRouter.route('/:instituteId')
 .get((req,res,next) => {
     Institutions.findById(req.params.instituteId)
     .then((institute) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(institute);
+        if(!institute) {
+            const err = new Error('Institute with id ' + req.params.instituteId + ' not found.');
+            err.statusCode = 404;
+            return next(err);
+        }
+        else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(institute);
+        }
+        
 
     }, err => next(err))
     .catch((err) => next(err));
@@ -81,9 +89,16 @@ institutionRouter.route('/:instituteId')
         $set: req.body
     }, {new: true})
     .then((institute) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(institute);
+        if(!institute) {
+            const err = new Error('Institute with id ' + req.params.instituteId + ' not found.');
+            err.statusCode = 404;
+            return next(err);
+        }
+        else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(institute);
+        }
     }, err => next(err))
     .catch((err) => next(err));
 })
